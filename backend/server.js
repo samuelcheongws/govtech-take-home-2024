@@ -35,9 +35,9 @@ app.post('/api/matches', (req, res) => {
     const [teamA, teamB, goalsA, goalsB] = line.split(' ');
     return { teamA, teamB, goalsA: parseInt(goalsA), goalsB: parseInt(goalsB) };
   });
-  matches = matches.concat(matchData);
+  // matches = matches.concat(matchData);
   try {
-    updateTeamStats();  // Updates stats based on matches
+    updateTeamStats(matchData);  // Updates stats based on matches
     res.status(200).send('Matches processed successfully');
   } catch (error) {
     console.error('Error updating team stats AT API POST:', error);
@@ -45,12 +45,18 @@ app.post('/api/matches', (req, res) => {
   }
 });
 
-const updateTeamStats = () => {
+const addMatchData = (matchData) => {
+
+    
+};
+
+const updateTeamStats = (matchData) => {
   // Pre-check to ensure all team names exist in the teams array before proceeding
   const missingTeams = [];
+  console.log(missingTeams);
 
   // Check for missing teams and gather their names
-  matches.forEach(match => {
+  matchData.forEach(match => {
     const { teamA, teamB } = match;
     const teamAExists = teams.some(team => team.name === teamA);
     const teamBExists = teams.some(team => team.name === teamB);
@@ -69,14 +75,14 @@ const updateTeamStats = () => {
   }
 
   // Reset team stats
-  teams.forEach(team => {
-    team.points = 0;
-    team.goals = 0;
-    team.altPoints = 0;
-  });
+  // teams.forEach(team => {
+  //   team.points = 0;
+  //   team.goals = 0;
+  //   team.altPoints = 0;
+  // });
 
   // Iterate through each match and update stats
-  matches.forEach(match => {
+  matchData.forEach(match => {
     const { teamA, teamB, goalsA, goalsB } = match;
     const teamAStats = teams.find(team => team.name === teamA);
     const teamBStats = teams.find(team => team.name === teamB);
