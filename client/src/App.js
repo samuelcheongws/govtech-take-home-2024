@@ -4,14 +4,13 @@ import MatchInput from './components/MatchInput';
 import Ranking from './components/Ranking';
 import TeamDetails from './components/TeamDetails';
 import EditData from './components/EditData';
+import './App.css';
 import axios from 'axios';
 
 function App() {
-  const [data, setData] = useState("");
   const getData=async()=>{
     try{
       const {data}=await axios.get('http://localhost:5000/status');
-      setData(data);
     }catch(error){
       console.error(error);
     }
@@ -21,8 +20,7 @@ function App() {
   },[]);
 
   return (
-    <div className="App">
-      <div>{data}</div>
+    <div className="App-header">
       <h1>Football Championship Tracker</h1>
       
       {/* Component for entering team information */}
