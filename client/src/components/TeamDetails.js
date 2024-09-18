@@ -31,6 +31,9 @@ function TeamDetails() {
           <p>Registration Date: {teamDetails.regDate}</p>
           <p>Group: {teamDetails.group}</p>
           {/* KIV the below 2. I need to ensure ranking logic is correct first. */}
+          <p>Points: {teamDetails.points}</p>
+          <p>Goals Scored: {teamDetails.goals}</p>
+          <p>Alternate Points: {teamDetails.altPoints}</p>
           {/* <p>Matches Played: {teamDetails.matchesPlayed}</p>
           <p>Outcome: {teamDetails.outcome}</p> */}
         </div>
