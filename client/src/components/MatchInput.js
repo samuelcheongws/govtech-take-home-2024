@@ -13,7 +13,8 @@ function MatchInput() {
       await axios.post('/api/matches', { matches: matchData });
       alert('Match results submitted successfully');
     } catch (error) {
-      console.error(error);
+      console.error('Error submitting match results:', error);
+      alert(`Error: ${error.response?.data?.error || 'An unknown error occurred'}`);
     }
   };
 

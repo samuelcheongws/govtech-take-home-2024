@@ -1,41 +1,3 @@
-// const express = require('express');
-// const mongoose = require('mongoose');
-// const cors = require('cors');
-
-
-// const app = express();
-// const PORT = process.env.PORT || 5000;
-// app.use(cors());
-// app.use(express.json());
-// // Connect to MongoDB
-// mongoose.connect('mongodb://localhost/mern-stack-db', { useNewUrlParser: true, useUnifiedTopology: true });
-// // Define routes and middleware
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-// });
-
-// const todoSchema = new mongoose.Schema({
-//   task: String,
-//   completed: Boolean,
-// });
-// const Todo = mongoose.model('Todo', todoSchema);
-
-// // Create a new todo
-// app.post('/todos', async (req, res) => {
-//   const newTodo = new Todo(req.body);
-//   await newTodo.save();
-//   res.json(newTodo);
-// });
-// // Update an existing todo
-// app.put('/todos/:id', async (req, res) => {
-//   const updatedTodo = await Todo.findByIdAndUpdate(req.params.id, req.body, { new: true });
-//   res.json(updatedTodo);
-// });
-// // Delete a todo
-// app.delete('/todos/:id', async (req, res) => {
-//   await Todo.findByIdAndRemove(req.params.id);
-//   res.json({ message: 'Todo deleted successfully' });
-// });
 import { createRequire } from "module";
 import cors from 'cors';
 
@@ -74,13 +36,79 @@ app.post('/api/matches', (req, res) => {
     return { teamA, teamB, goalsA: parseInt(goalsA), goalsB: parseInt(goalsB) };
   });
   matches = matches.concat(matchData);
-  updateTeamStats();
-  res.sendStatus(200);
+  try {
+    updateTeamStats();  // Updates stats based on matches
+    res.status(200).send('Matches processed successfully');
+  } catch (error) {
+    console.error('Error updating team stats AT API POST:', error);
+    res.status(400).json({ error: error.message });  // Sends error to the client
+  }
 });
 
 const updateTeamStats = () => {
-  // Update points, goals, etc. for each team based on matches
+  // Pre-check to ensure all team names exist in the teams array before proceeding
+  const allTeamsExist = matches.every(match => {
+    const { teamA, teamB } = match;
+    const teamAExists = teams.some(team => team.name === teamA);
+    const teamBExists = teams.some(team => team.name === teamB);
+
+    if (!teamAExists) {
+      console.error(`Error: Team '${teamA}' not found in the teams list.`);
+      return false;
+    }
+    if (!teamBExists) {
+      console.error(`Error: Team '${teamB}' not found in the teams list.`);
+      return false;
+    }
+
+    return true;
+  });
+
+  if (!allTeamsExist) {
+    throw new Error('One or more teams not found in the teams list');
+  }
+
+  // Reset team stats
+  teams.forEach(team => {
+    team.points = 0;
+    team.goals = 0;
+    team.altPoints = 0;
+  });
+
+  // Iterate through each match and update stats
+  matches.forEach(match => {
+    const { teamA, teamB, goalsA, goalsB } = match;
+    const teamAStats = teams.find(team => team.name === teamA);
+    const teamBStats = teams.find(team => team.name === teamB);
+
+    // Update goals for both teams
+    teamAStats.goals += goalsA;
+    teamBStats.goals += goalsB;
+
+    // Determine match outcome and update points
+    if (goalsA > goalsB) {
+      // Team A wins
+      teamAStats.points += 3;
+      teamAStats.altPoints += 5;
+      teamBStats.altPoints += 1;
+    } else if (goalsB > goalsA) {
+      // Team B wins
+      teamBStats.points += 3;
+      teamBStats.altPoints += 5;
+      teamAStats.altPoints += 1;
+    } else {
+      // It's a draw
+      teamAStats.points += 1;
+      teamAStats.altPoints += 3;
+      teamBStats.points += 1;
+      teamBStats.altPoints += 3;
+    }
+  });
+
+  console.log('Team stats updated:', teams);
 };
+
+
 
 // API to retrieve rankings
 app.get('/api/rankings', (req, res) => {
