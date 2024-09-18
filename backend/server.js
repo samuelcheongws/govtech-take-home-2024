@@ -1,4 +1,5 @@
 import { createRequire } from "module";
+import UpdateTeamStats from './services/UpdateTeamStats.js';
 import cors from 'cors';
 
 const require = createRequire(import.meta.url);
@@ -37,7 +38,8 @@ app.post('/api/matches', (req, res) => {
   });
   // matches = matches.concat(matchData);
   try {
-    updateTeamStats(matchData);  // Updates stats based on matches
+    UpdateTeamStats(teams, matchData);  // Updates stats based on matches
+    // updateTeamStats(matchData);  // Updates stats based on matches
     res.status(200).send('Matches processed successfully');
   } catch (error) {
     console.error('Error updating team stats AT API POST:', error);
