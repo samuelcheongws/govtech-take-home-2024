@@ -45,11 +45,6 @@ app.post('/api/matches', (req, res) => {
   }
 });
 
-const addMatchData = (matchData) => {
-
-    
-};
-
 const updateTeamStats = (matchData) => {
   // Pre-check to ensure all team names exist in the teams array before proceeding
   const missingTeams = [];
@@ -74,12 +69,6 @@ const updateTeamStats = (matchData) => {
     throw new Error(`The following teams were not found: ${missingTeams.join(', ')}`);
   }
 
-  // Reset team stats
-  // teams.forEach(team => {
-  //   team.points = 0;
-  //   team.goals = 0;
-  //   team.altPoints = 0;
-  // });
 
   // Iterate through each match and update stats
   matchData.forEach(match => {
