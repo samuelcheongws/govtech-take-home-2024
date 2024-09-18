@@ -1,5 +1,6 @@
 import { createRequire } from "module";
 import UpdateTeamStats from './services/UpdateTeamStats.js';
+import GetTeamRankings from './services/GetTeamRankings.js';
 import cors from 'cors';
 
 const require = createRequire(import.meta.url);
@@ -49,7 +50,7 @@ app.post('/api/matches', (req, res) => {
 
 // API to retrieve rankings
 app.get('/api/rankings', (req, res) => {
-  res.json(teams);
+  res.json(GetTeamRankings(teams));
 });
 
 // API to get details for a specific team
