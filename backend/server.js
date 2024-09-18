@@ -47,25 +47,25 @@ app.post('/api/matches', (req, res) => {
 
 const updateTeamStats = () => {
   // Pre-check to ensure all team names exist in the teams array before proceeding
-  const allTeamsExist = matches.every(match => {
+  const missingTeams = [];
+
+  // Check for missing teams and gather their names
+  matches.forEach(match => {
     const { teamA, teamB } = match;
     const teamAExists = teams.some(team => team.name === teamA);
     const teamBExists = teams.some(team => team.name === teamB);
 
     if (!teamAExists) {
-      console.error(`Error: Team '${teamA}' not found in the teams list.`);
-      return false;
+      missingTeams.push(teamA);
     }
     if (!teamBExists) {
-      console.error(`Error: Team '${teamB}' not found in the teams list.`);
-      return false;
+      missingTeams.push(teamB);
     }
-
-    return true;
   });
 
-  if (!allTeamsExist) {
-    throw new Error('One or more teams not found in the teams list');
+  // If there are missing teams, throw an error with the list
+  if (missingTeams.length > 0) {
+    throw new Error(`The following teams were not found: ${missingTeams.join(', ')}`);
   }
 
   // Reset team stats
@@ -107,8 +107,6 @@ const updateTeamStats = () => {
 
   console.log('Team stats updated:', teams);
 };
-
-
 
 // API to retrieve rankings
 app.get('/api/rankings', (req, res) => {
