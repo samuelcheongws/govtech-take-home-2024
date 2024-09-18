@@ -9,6 +9,7 @@ function TeamDetails() {
     try {
       const { data } = await axios.get(`/api/teams/${teamName}`);
       setTeamDetails(data);
+      console.log(teamDetails);
     } catch (error) {
       console.error(error);
     }
@@ -27,10 +28,11 @@ function TeamDetails() {
 
       {teamDetails && (
         <div>
-          <p>Registration Date: {teamDetails.registrationDate}</p>
-          <p>Group: {teamDetails.groupNumber}</p>
-          <p>Matches Played: {teamDetails.matchesPlayed}</p>
-          <p>Outcome: {teamDetails.outcome}</p>
+          <p>Registration Date: {teamDetails.regDate}</p>
+          <p>Group: {teamDetails.group}</p>
+          {/* KIV the below 2. I need to ensure ranking logic is correct first. */}
+          {/* <p>Matches Played: {teamDetails.matchesPlayed}</p>
+          <p>Outcome: {teamDetails.outcome}</p> */}
         </div>
       )}
     </div>

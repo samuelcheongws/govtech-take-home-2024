@@ -64,7 +64,7 @@ app.post('/api/teams', (req, res) => {
     return { name, regDate, group, points: 0, goals: 0, altPoints: 0 };
   });
   teams = teams.concat(teamData);
-  res.sendStatus(200);
+  res.status(200).json({ addedTeams: teamData });
 });
 
 // API to add match results
