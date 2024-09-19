@@ -15,7 +15,6 @@ app.use(bodyParser.json());
 app.use(cors());
 
 let teams = [];
-let matches = [];
 
 // API to check if server is running
 app.get('/status', (req, res, next) => res.sendStatus(200));
@@ -37,7 +36,6 @@ app.post('/api/matches', (req, res) => {
     const [teamA, teamB, goalsA, goalsB] = line.split(' ');
     return { teamA, teamB, goalsA: parseInt(goalsA), goalsB: parseInt(goalsB) };
   });
-  // matches = matches.concat(matchData);
   try {
     UpdateTeamStats(teams, matchData);  // Updates stats based on matches
     res.status(200).send('Matches processed successfully');
@@ -62,7 +60,6 @@ app.get('/api/teams/:teamName', (req, res) => {
 // API to clear data
 app.delete('/api/data', (req, res) => {
   teams = [];
-  matches = [];
   res.sendStatus(200);
 });
 
