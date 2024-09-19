@@ -10,7 +10,7 @@ function MatchInput() {
 
   const submitMatches = async () => {
     try {
-      await axios.post('/api/matches', { matches: matchData.trim() });
+      await axios.post('/api/matches', { matches: matchData });
       alert('Match results submitted successfully');
     } catch (error) {
       alert(`Error: ${error.response?.data?.error || 'An unknown error occurred'}`);
