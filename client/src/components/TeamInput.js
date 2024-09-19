@@ -13,7 +13,7 @@ function TeamInput() {
   // Submit teams to the backend
   const submitTeams = async () => {
     try {
-      const response = await axios.post('/api/teams', { teams: teamData });
+      const response = await axios.post('/api/teams', { teams: teamData.trim() });
       
       // Store the added teams from the response in state
       setAddedTeams(response.data.addedTeams);
