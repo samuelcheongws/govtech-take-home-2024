@@ -2,7 +2,6 @@ import { createRequire } from "module";
 import UpdateTeamStats from './services/UpdateTeamStats.js';
 import GetTeamRankings from './services/GetTeamRankings.js';
 import cors from 'cors';
-
 const require = createRequire(import.meta.url);
 
 
@@ -22,7 +21,10 @@ app.get('/status', (req, res, next) => res.sendStatus(200));
 
 // API to add teams
 app.post('/api/teams', (req, res) => {
-  const teamData = req.body.teams.split('\n').map((line) => {
+  const teamArray = req.body.teams.split('\n');
+  const teamArrayCleaned = teamArray.filter((line) => line.trim() !== '');
+
+  const teamData = teamArrayCleaned.map((line) => {
     const [name, regDate, group] = line.split(' ');
     return { name, regDate, group, points: 0, goals: 0, altPoints: 0 };
   });
@@ -32,7 +34,9 @@ app.post('/api/teams', (req, res) => {
 
 // API to add match results
 app.post('/api/matches', (req, res) => {
-  const matchData = req.body.matches.split('\n').map((line) => {
+  const matchArray = req.body.matches.split('\n');
+  const matchArrayCleaned = matchArray.filter((line) => line.trim() !== '');
+  const matchData = matchArrayCleaned.map((line) => {
     const [teamA, teamB, goalsA, goalsB] = line.split(' ');
     return { teamA, teamB, goalsA: parseInt(goalsA), goalsB: parseInt(goalsB) };
   });

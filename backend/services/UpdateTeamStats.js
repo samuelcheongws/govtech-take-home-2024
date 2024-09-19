@@ -17,9 +17,13 @@ const UpdateTeamStats = (teams, matchData) => {
     }
   });
 
+  const replaceEmptyValues = (arr) => {
+    return arr.map(item => item === '' ? 'empty line' : item);
+  };
+
   // If there are missing teams, throw an error with the list
   if (missingTeams.length > 0) {
-    throw new Error(`The following teams were not found: ${missingTeams.join(', ')}`);
+    throw new Error(`The following teams were not found: ${replaceEmptyValues(missingTeams).join(', ')}`);
   }
 
 
