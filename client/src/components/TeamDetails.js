@@ -9,7 +9,6 @@ function TeamDetails() {
     try {
       const { data } = await axios.get(`/api/teams/${teamName}`);
       setTeamDetails(data);
-      console.log(teamDetails);
     } catch (error) {
       console.error(error);
     }
@@ -30,12 +29,15 @@ function TeamDetails() {
         <div>
           <p>Registration Date: {teamDetails.regDate}</p>
           <p>Group: {teamDetails.group}</p>
-          {/* KIV the below 2. I need to ensure ranking logic is correct first. */}
-          <p>Points: {teamDetails.points}</p>
-          <p>Goals Scored: {teamDetails.goals}</p>
-          <p>Alternate Points: {teamDetails.altPoints}</p>
-          {/* <p>Matches Played: {teamDetails.matchesPlayed}</p>
-          <p>Outcome: {teamDetails.outcome}</p> */}
+          <p>Matches Played: {teamDetails.matchesPlayed}</p>
+          <h4>Match Outcomes:</h4>
+          <ul>
+            {teamDetails.outcome.map((match, index) => (
+              <li key={index}>
+                {match.match.teamA} vs {match.match.teamB}: {match.outcome}
+              </li>
+            ))}
+          </ul>
         </div>
       )}
     </div>

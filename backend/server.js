@@ -73,8 +73,35 @@ app.get('/api/rankings', (req, res) => {
 // API to get details for a specific team
 app.get('/api/teams/:teamName', (req, res) => {
   const team = teams.find((t) => t.name === req.params.teamName);
-  res.json(team);
+  
+  if (!team) {
+    return res.status(404).json({ error: 'Team not found' });
+  }
+
+  const matchesPlayed = matches.filter(match => 
+    match.teamA === team.name || match.teamB === team.name
+  );
+
+  const outcomes = matchesPlayed.map(match => {
+    if (match.teamA === team.name) {
+      return match.goalsA > match.goalsB ? 'Win' : match.goalsA < match.goalsB ? 'Loss' : 'Draw';
+    } else {
+      return match.goalsB > match.goalsA ? 'Win' : match.goalsB < match.goalsA ? 'Loss' : 'Draw';
+    }
+  });
+
+  const outcomeSummary = matchesPlayed.map((match, index) => ({
+    match,
+    outcome: outcomes[index],
+  }));
+
+  res.json({ 
+    ...team, 
+    matchesPlayed: matchesPlayed.length, 
+    outcome: outcomeSummary 
+  });
 });
+
 
 // API to clear data
 app.delete('/api/data', (req, res) => {
