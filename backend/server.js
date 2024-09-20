@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 app.use(cors());
 
 let teams = [];
+let matches = [];
 
 // API to check if server is running
 app.get('/status', (req, res, next) => res.sendStatus(200));
@@ -28,18 +29,32 @@ app.post('/api/teams', (req, res) => {
     const [name, regDate, group] = line.split(' ');
     return { name, regDate, group, points: 0, goals: 0, altPoints: 0 };
   });
-  teams = teams.concat(teamData);
-  res.status(200).json({ addedTeams: teamData });
+  teams = teamData;
+  if (matches.length > 0) {
+    try {
+      UpdateTeamStats(teams, matches);  // Updates stats based on matches
+      res.status(200).json({ addedTeams: teamData });
+    } catch (error) {
+      console.error('Error updating team stats AT API POST:', error);
+      res.status(400).json({ error: error.message });  // Sends error to the client
+    }
+  }
+  else {
+    res.status(200).json({ addedTeams: teamData });
+  }
+  
 });
 
 // API to add match results
 app.post('/api/matches', (req, res) => {
+  teams = teams.map((team) => ({...team, points: 0, goals: 0, altPoints: 0 }));
   const matchArray = req.body.matches.split('\n');
   const matchArrayCleaned = matchArray.filter((line) => line.trim() !== '');
   const matchData = matchArrayCleaned.map((line) => {
     const [teamA, teamB, goalsA, goalsB] = line.split(' ');
     return { teamA, teamB, goalsA: parseInt(goalsA), goalsB: parseInt(goalsB) };
   });
+  matches = matchData;
   try {
     UpdateTeamStats(teams, matchData);  // Updates stats based on matches
     res.status(200).send('Matches processed successfully');
@@ -64,6 +79,7 @@ app.get('/api/teams/:teamName', (req, res) => {
 // API to clear data
 app.delete('/api/data', (req, res) => {
   teams = [];
+  matches = [];
   res.sendStatus(200);
 });
 
