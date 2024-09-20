@@ -3,7 +3,7 @@ import axios from 'axios';
 
 function Ranking() {
   const [rankings, setRankings] = useState([]);
-  
+
   const fetchRankings = async () => {
     try {
       const { data } = await axios.get('/api/rankings');
@@ -17,17 +17,37 @@ function Ranking() {
     fetchRankings();
   }, []);
 
+  const groupTeams = () => {
+    return rankings.reduce((groups, team) => {
+      if (!groups[team.group]) {
+        groups[team.group] = [];
+      }
+      groups[team.group].push(team);
+      return groups;
+    }, {});
+  };
+
+  const groupedTeams = groupTeams();
+
   return (
     <div>
       <h2>Team Rankings</h2>
       <button onClick={fetchRankings}>Obtain Ranking</button>
-      <ul>
-        {rankings.map((team) => (
-          <li key={team.name}>
-            {team.name} - {team.group}: {team.points} points, {team.goals} goals, {team.altPoints} altPoints, {team.regDate} regDate
-          </li>
-        ))}
-      </ul>
+      {Object.entries(groupedTeams).map(([group, teams]) => (
+        <div key={group}>
+          <h3>Group {group}</h3>
+          <ul>
+            {teams.map((team, index) => {
+              const isHighlighted = teams.length < 4 || index < 4;
+              return (
+                <li key={team.name} style={{ fontWeight: isHighlighted ? 'bold' : 'normal', color: isHighlighted ? 'green' : 'white' }}>
+                  {team.name} - {team.points} points, {team.goals} goals, {team.altPoints} altPoints, {team.regDate} regDate
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      ))}
     </div>
   );
 }
