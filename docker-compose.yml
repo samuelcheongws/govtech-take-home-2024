@@ -5,20 +5,30 @@ services:
     build:
       context: ./backend
     ports:
-      - "5000:5000"
+      - "5000:5000"  # Maps container's port 5000 to host's port 5000
     volumes:
       - ./backend:/usr/src/app
     environment:
       - NODE_ENV=development
+      # - API_SERVER_PORT=5000  # Set your backend port
+    networks:
+      - mynetwork
 
   frontend:
     build:
       context: ./client
     ports:
-      - "3000:3000"
+      - "3000:3000"  # Maps container's port 3000 to host's port 3000
     volumes:
       - ./client:/usr/src/app
     environment:
       - NODE_ENV=development
+      - REACT_APP_API_HOST=http://backend:5000  # Use 'backend' service name, not localhost
     depends_on:
       - backend
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge  # Default Docker network type
