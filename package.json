@@ -11,6 +11,9 @@
     "nodemon": "^3.1.5"
   },
   "scripts": {
+    "install-backend": "cd backend && npm install",
+    "install-client": "cd client && npm install",
+    "postinstall": "npm run install-backend && npm run install-client",
     "start": "concurrently \"npm run server\" \"npm run client\"",
     "client": "npm start --prefix client",
     "server": "npm start --prefix backend"
