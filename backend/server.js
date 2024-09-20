@@ -54,10 +54,10 @@ app.post('/api/matches', (req, res) => {
     const [teamA, teamB, goalsA, goalsB] = line.split(' ');
     return { teamA, teamB, goalsA: parseInt(goalsA), goalsB: parseInt(goalsB) };
   });
-  matches = matchData;
   try {
     UpdateTeamStats(teams, matchData);  // Updates stats based on matches
     res.status(200).send('Matches processed successfully');
+    matches = matchData;
   } catch (error) {
     console.error('Error updating team stats AT API POST:', error);
     res.status(400).json({ error: error.message });  // Sends error to the client
